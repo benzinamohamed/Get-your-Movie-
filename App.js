@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Tabs from './Tabs';
+import ItemSearch from './Screens/ItemSearch';
+import ItemMovie from './Screens/ItemMovie';
+import { useEffect ,createContext, useState } from 'react';
+import { createTable } from './database/Db';
+
+export const navContext =createContext()
 
 export default function App() {
+  const stack = createStackNavigator()
+  const [mount , setMount] = useState(false)
+  useEffect(()=>{
+     createTable()
+  }
+
+  ,[])
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <navContext.Provider value={{mount,setMount}}>
+    <NavigationContainer>
+     <stack.Navigator>
+     <stack.Screen name='tabs' component={Tabs} options={{headerShown :false}} ></stack.Screen>
+      <stack.Screen name='ItemSearch' component={ItemSearch} options={{headerShown : false}} ></stack.Screen>
+      <stack.Screen name='itemMovie' component={ItemMovie} options={{headerShown : false}}></stack.Screen>
+     </stack.Navigator>
+    </NavigationContainer>
+    </navContext.Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
